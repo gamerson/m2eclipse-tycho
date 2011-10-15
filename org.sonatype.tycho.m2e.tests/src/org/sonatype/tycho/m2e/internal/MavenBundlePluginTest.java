@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.IClasspathManager;
 import org.eclipse.m2e.tests.common.AbstractLifecycleMappingTest;
 import org.eclipse.m2e.tests.common.WorkspaceHelpers;
@@ -49,10 +50,16 @@ public class MavenBundlePluginTest
     {
         assertNotNull( "Expected not null maven project facade", facade );
 
-        // make sure natures are setup right
-        IProject project = facade.getProject();
+        assertPDEPluginProject( facade.getProject(), manifestRelPath );
+    }
+
+    protected void assertPDEPluginProject( IProject project, String manifestRelPath )
+        throws CoreException, JavaModelException, InterruptedException
+    {
         assertNotNull( "Expected not null project", project );
         WorkspaceHelpers.assertNoErrors( project );
+
+        // make sure natures are setup right
         assertTrue( project.hasNature( PDE.PLUGIN_NATURE ) );
         assertTrue( project.hasNature( JavaCore.NATURE_ID ) );
         assertTrue( project.hasNature( IMavenConstants.NATURE_ID ) );
@@ -178,6 +185,26 @@ public class MavenBundlePluginTest
         WorkspaceHelpers.assertErrorMarker( IMavenConstants.MARKER_CONFIGURATION_ID,
                                             "Project configuration is not up-to-date with pom.xml. Run project configuration update",
                                             null, null, project );
+    }
+
+    public void testEmbedWorkspaceDependency()
+        throws Exception
+    {
+        IProject[] projects = importProjects( "projects/maven-bundle-plugin/embed-workspace-dependency", //
+                                              new String[] { "bundle/pom.xml", "dependency/pom.xml" }, //
+                                              new ResolverConfiguration() );
+        waitForJobsToComplete();
+
+        assertPDEPluginProject( projects[0], "META-INF/MANIFEST.MF" );
+
+        // compile classes and generate manifest
+        workspace.build( IncrementalProjectBuilder.FULL_BUILD, monitor );  
+        waitForJobsToComplete();
+
+        // make sure workspace dependency was scanned for exported packages
+        IFile mfile = projects[0].getFile( "META-INF/MANIFEST.MF" );
+        Manifest mf = loadManifest( mfile );
+        assertEquals( "dependency", mf.getMainAttributes().getValue( "Export-Package" ) );
     }
 
     private Manifest loadManifest( IFile mfile )

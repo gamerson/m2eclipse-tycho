@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>biz.aQute</groupId>
+  <artifactId>bndlib</artifactId>
+  <version>1.44.0-SONATYPE-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20111015.013904</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20111015013904</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.44.0-SONATYPE-20111015.013904-1</value>
+        <updated>20111015013904</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.44.0-SONATYPE-20111015.013904-1</value>
+        <updated>20111015013904</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
