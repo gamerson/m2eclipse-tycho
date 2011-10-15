@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.m2e.core.internal.IMavenConstants;
+import org.eclipse.m2e.core.internal.preferences.MavenConfigurationImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.jdt.IClasspathManager;
@@ -190,6 +191,8 @@ public class MavenBundlePluginTest
     public void testEmbedWorkspaceDependency()
         throws Exception
     {
+//        ( (MavenConfigurationImpl) mavenConfiguration ).setDebugOutput( true );
+
         IProject[] projects = importProjects( "projects/maven-bundle-plugin/embed-workspace-dependency", //
                                               new String[] { "bundle/pom.xml", "dependency/pom.xml" }, //
                                               new ResolverConfiguration() );
@@ -198,7 +201,7 @@ public class MavenBundlePluginTest
         assertPDEPluginProject( projects[0], "META-INF/MANIFEST.MF" );
 
         // compile classes and generate manifest
-        workspace.build( IncrementalProjectBuilder.FULL_BUILD, monitor );  
+        workspace.build( IncrementalProjectBuilder.FULL_BUILD, monitor );
         waitForJobsToComplete();
 
         // make sure workspace dependency was scanned for exported packages
